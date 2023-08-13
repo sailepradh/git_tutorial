@@ -38,7 +38,8 @@ rule get_SRA_by_accession:
     params:
         max_reads = config["max_reads"],
         url = get_sample_url
-    shell:
+    shell
+    :
         """
         wget -o {log} -O - {params.url} | seqtk sample - {params.max_reads} | gzip -c > {output[0]}
         """
@@ -155,7 +156,7 @@ rule align_to_genome:
             genome_id = config["genome_id"])
     shell:
         """
-        bowtie2 -x intermediate/{config[genome_id]} -U {input.fastq} > {output} 2>{log}
+        bowtie2 --very-sensitive-local -x intermediate/{config[genome_id]} -U {input.fastq} > {output} 2>{log}
         """
 
 rule sort_bam:
